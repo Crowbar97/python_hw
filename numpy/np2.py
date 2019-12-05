@@ -124,9 +124,12 @@ print("closest element for {} is {}".format(target, closest))
 
 print("\n- image representation:")
 img = np.zeros((6, 6, 3))
-img[:, :2, :] = [1, 0, 0]
-img[:, 2:4, :] = [0, 1, 0]
-img[:, 4:6, :] = [0, 0, 1]
+for i in range(img.shape[0]):
+    for j in range(img.shape[1]):
+        r = i / img.shape[0]
+        g = j / img.shape[1]
+        b = (r + g) / 2
+        img[i, j] = [r, g, b]
 print(img.shape)
 plt.imshow(img)
 # plt.show()
@@ -145,3 +148,88 @@ for i in range(len(coords) - 1):
     for j in range(i + 1, len(coords)):
         dists.append(dist(coords[i], coords[j]))
 print("dists:\n{}".format(dists))
+
+
+print("\n- type conversion:")
+m = np.random.rand(5, 3) * 10
+print("source:\n{}".format(m))
+print("conv:\n{}".format(m.astype("int")))
+
+print("\n- matrix reading:")
+m = np.loadtxt('mat.txt')
+print("m:\n{}".format(m))
+
+print("\n- numpy enumerate:")
+m = np.array([[1, 2],
+              [3, 4]])
+for index, x in np.ndenumerate(m):
+    print(index, x)
+
+print("\n- 2-variate Gaussian:")
+mean = (1, 2)
+cov = [[1, 0],
+       [0, 1]]
+m = np.random.multivariate_normal(mean, cov, 3)
+print("m:\n{}".format(m))
+
+print("\n- uniform-distributed matrix:")
+a = 3
+b = 8
+m = np.random.uniform(a, b, 10).reshape((5, 2))
+print("m:\n{}".format(m))
+
+print("\n- mean subtraction:")
+m = (np.random.rand(2, 3) * 10).astype("int")
+print("source:\n{}".format(m))
+mean = np.mean(m)
+print("mean = %f" % mean)
+print("sub:\n{}".format(m - mean))
+
+
+print("\n- sorting by 2-nd col:")
+m = (np.random.rand(8, 3) * 10).astype("int")
+print("source:\n{}".format(m))
+print("sorted:\n{}".format(m[m[:,1].argsort(kind='mergesort')]))
+
+print("\n- searching for zero columns:")
+m = np.array([[1, 0, 3],
+              [4, 0, 6]])
+print("m:\n{}".format(m))
+for col in m.T:
+    if not col.any():
+        print(True)
+        break
+
+print("\n- inc by index:")
+a = np.array([0, 0, 0, 0, 0])
+print("source: {}".format(a))
+ids = np.array([1, 3, 1, 25])
+print("ids: {}".format(ids))
+ids = np.unique(ids)
+ids = list(filter(lambda id: id < len(a), ids))
+for id in ids:
+    a[id] += 1
+print("inc: {}".format(a))
+
+print("\n- color counting:")
+img[0, 1] = [0, 0, 0]
+cs = {}
+for row in img.tolist():
+    for cell in row:
+        desc = hash(str(cell))
+        # print("{}: {}".format(cell, desc))
+        cs[desc] = cs.get(desc, 0) + 1
+print(len(cs.keys()))
+
+print("\n- last 2 axis sum:")
+m = (np.random.rand(5, 5, 5, 5) * 10).astype("int")
+print(np.sum(m, axis=(2, 3)))
+
+print("- matrix multiplication diagonal:")
+m1 = (np.random.rand(5, 3) * 10).astype("int")
+m2 = (np.random.rand(3, 2) * 10).astype("int")
+print(m1.dot(m2))
+print(np.diag(m1.dot(m2)))
+
+
+
